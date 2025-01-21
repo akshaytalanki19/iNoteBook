@@ -3,6 +3,7 @@ import User from "../models/User.js"
 import { body, validationResult } from "express-validator"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import fetchUser from "../middleware/fetchUser.js"
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -45,7 +46,6 @@ router.post('/createUser',[
    }
 })
 
-
 // authenticate a user
 router.post('/login',[
     body('email', 'Enter a valid name').isEmail(),
@@ -79,5 +79,20 @@ router.post('/login',[
         res.status(500).send("Internal server error");
     }
 })
-  
+
+// get user details login is mandatory
+router.post('/getUser',fetchUser,async (req,res)=>{
+    
+    try {
+        const userId =req.user.id;
+        const user = await User.findById(userId).select("-password")
+        res.send(user);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send("Internal server error");
+    }
+
+})
+
+
 export default router;
