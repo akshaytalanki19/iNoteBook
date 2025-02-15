@@ -8,7 +8,7 @@ const router = Router();
 router.get('/fetchallnotes',fetchUser,async(req,res)=>{
     try{
     const notes= await Note.find({user: req.user.id});
-    res.json([notes]);
+    res.json(notes);
     }
     catch(error){
         console.log(error.message);
